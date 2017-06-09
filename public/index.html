@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html ng-app="Monapp">
+    <head>
+        <title>TODO supply a title</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.13/angular.min.js"></script>
+        <script src="https://code.angularjs.org/1.2.13/angular-route.min.js"></script>
+    </head>
+    <body>
+        <div ng-view></div>
+        <script>
+            var app = angular.module('Monapp', ['ngRoute'])
+            app.config(function ($routeProvider) {
+                $routeProvider
+                        .when('/', {templateUrl: 'home.html'})
+                        .when('/comments/:id', {templateUrl: 'comments.html'})
+                        .otherwise({redirectTo: '/'});
+            });
+            app.service('postFactory', function ($http, $q) {
+                this.posts = false,
+                        this.getPosts = function () {
+                            var deffered = $q.defer();
+                            if(this.posts !== false){
+                                deffered.resolve(this.posts);
+                            }
+                            $http.get('users.json')
+                                    .success(function (data, status) {
+                                        this.posts = data;
+                                        deffered.resolve(this.posts);
+                                    })
+                                    .error(function (data, status) {
+                                        deffered.reject('error');
+                                    });
+                            return deffered.promise;
+                        },
+                        this.getPost = function (id) {
+                            var deffered = $q.defer();
+                            var post = {};
+                            var posts = this.getPosts().then(function (posts) {
+                                angular.forEach(posts, function (value, key) {
+                                    if (value.id == id) {
+                                        post = value;
+                                    }
+                                })
+                                deffered.resolve(post);
+                            }, function () {
+                                alert('msg');
+                            });
+                            return deffered.promise;
+                        }
+            });
+            app.controller('Elements', function Elements($scope, postFactory) {
+                $scope.users = postFactory.getPosts().then(function (posts) {
+                    $scope.users = posts;
+                }, function (msg) {
+                    alert(msg);
+                });
+
+            });
+            app.controller('NewElements', function NewElements($scope, postFactory, $routeParams) {
+                var scope = joueurs = postFactory.getPost($routeParams.id).then(function (post) {
+
+                    $scope.name = scope.lastname;
+                    $scope.joueurs = scope.comments;
+                }, function () {
+                    alert('msg');
+                });
+            });
+        </script>
+    </body>
+</html>

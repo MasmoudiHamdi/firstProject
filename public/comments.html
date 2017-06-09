@@ -1,0 +1,15 @@
+   
+<a href="#/">retour aux elements </a>
+
+
+<div ng-controller="NewElements">
+    <h1>
+        {{name}}
+    </h1>
+    <ul>
+        <li  ng-repeat="joueur in joueurs">
+            {{joueur.content}}
+            <hr>
+        </li>
+    </ul>
+</div>

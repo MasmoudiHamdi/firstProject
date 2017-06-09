@@ -1,0 +1,11 @@
+
+     <div ng-controller="Elements">
+            <ul>
+                <li  ng-repeat="user in users">
+                    <h4>{{user.name| uppercase}}</h4> <h5>{{user.lastname}}</h5>
+                    
+    
+    <a href="#/comments/{{user.id}}">{{user.comments.length}}</a>
+                </li>
+            </ul>
+        </div>
